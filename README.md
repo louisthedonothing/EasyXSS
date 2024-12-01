@@ -18,9 +18,10 @@ It runs through a specified wordlist of common XSS vulnerabilities, and alerts w
 - The following python libraries must me installed:
     'Requests', for making http requests
     'Beautifulsoup4' for identifying input forms
+    'ArgParse' for handling command line prompts
     
 You can install the libraries by running:
-```pip install requests beautifulsoup4```
+```pip install requests beautifulsoup4 Argparse```
 
 # Socials:
 
