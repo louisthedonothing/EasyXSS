@@ -20,3 +20,18 @@ def main():
 
     # Parses the flags and stores them in args
     args = parser.parse_args()
+
+
+defaultPayload = [
+    "<script>alert(1)</script>",
+    "<svg/onload=alert(1)>",
+    "<script>alert('XSS')</script>",
+]
+
+
+if args.payloads:
+    with open(args.payloads, 'r') as f:
+        customPayloads = [line.strip() for line in f.readlines()]
+        payloads = customPayloads
+else:
+        payloads = defaultPayload
