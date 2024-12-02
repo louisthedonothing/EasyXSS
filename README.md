@@ -15,7 +15,7 @@ It runs through a specified wordlist of common XSS vulnerabilities, and alerts w
 
 ## Prerequisites
 - Python 3+ **MUST** be installed on the system
-- The following python libraries must me installed:
+- The following python libraries **MUST** be installed:
     'Requests', for making http requests
     'Beautifulsoup4' for identifying input forms
     'ArgParse' for handling command line prompts
