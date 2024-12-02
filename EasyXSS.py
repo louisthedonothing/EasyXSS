@@ -8,6 +8,49 @@ import scrapy #locates multiple input points
 import argparse # Handles command line prompts
 
 
+def formFinder(url):
+    """
+    Fetches and parses forms
+    """
+    try:
+        response = requests.get(url)
+        soup = BeautifulSoup(response.content, 'html parser')    
+        return soup.find_all ("form")
+    except Exception as e:
+        print(f"Error finding forms:{e}")
+        return []
+
+def submitForm(form, url, payload):
+'''
+submits form and payload to the given url
+'''
+    try:
+        action = form.attrs.get("action")
+        method = form.attrs.get("Method", "get").lower()
+        form_url = urllib.parse.urljoin(join, action)
+        
+        
+        inputs = form.find_all("input")
+        data = {}
+        for input_tag in inputs:
+            name = input_tag.attrs.get("name")
+            input_type = input_tag.attrs.get("type", "text")
+            value = payload if input_type == "text" else input_tag.attrs.get("value", "")
+            if name:
+                data[name] = value
+
+#send request based on form method
+if method == "post":
+    response =  requests.post(form_url, data=data)
+else:
+    response = requests.get(form_url, params=data)
+
+    return response
+except Exception as e:
+       print(f"Error submitting form:{e}")
+       return None
+
+
 def main():
     # Creates argument parser
     parser = argparse.ArgumentParser(Description="Easy XSS")
@@ -39,15 +82,4 @@ if args.payloads:
 else:
     payloads = default_payloads
 
-def formFinder(url):
-    """
-    Fetches and parses forms
-    """
-    try:
-        response = requests.get(url)
-        soup = BeautifulSoup(response.content, 'html parser')    
-        return soup.find_all ("form")
-    except Exception as e:
-        print(f"Error finding forms:{e}")
-        return []
-    
+
