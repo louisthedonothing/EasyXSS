@@ -23,6 +23,10 @@ It runs through a specified wordlist of common XSS vulnerabilities, and alerts w
 You can install the libraries by running:
 ```pip install requests beautifulsoup4 Argparse```
 
+## Usage
+
+```python EasyXSS.py -u "http://example.com" -p "PATH TO WORDLIST"```
+
 # Socials:
 
 twitter: @looouuuiiiss_
