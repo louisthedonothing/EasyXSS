@@ -1,6 +1,6 @@
 import requests #HTTP requests (Post and get requests)
 import urllib #Encodes URLS
-import beautifulsoup4 #Parse html and locate input forms
+from bs4 import beautifulsoup #Parse html and locate input forms
 import mechanize # making a browser to interact with xss forms
 import selenium # inject payloads
 import pyppeteer # websocketing
@@ -30,8 +30,24 @@ defaultPayload = [
 
 
 if args.payloads:
-    with open(args.payloads, 'r') as f:
-        customPayloads = [line.strip() for line in f.readlines()]
-        payloads = customPayloads
+    try:
+        with open(args.payloads, 'r') as f:
+            payloads = [line.strip() for line in f.readlines()]
+    except FileNotFoundError:
+        print("Payload file not found. Using default payloads.")
+        payloads = default_payloads
 else:
-        payloads = defaultPayload
+    payloads = default_payloads
+
+def formFinder(url):
+    """
+    Fetches and parses forms
+    """
+    try:
+        response = requests.get(url)
+        soup = BeautifulSoup(response.content, 'html parser')    
+        return soup.find_all ("form")
+    except Exception as e:
+        print(f"Error finding forms:{e}")
+        return []
+    
