@@ -50,6 +50,28 @@ except Exception as e:
        print(f"Error submitting form:{e}")
        return None
 
+def scan_xss(url, payloads):
+    """
+    Scans the target URL for XSS vulnerabilities using the given payloads.
+    """
+    forms = find_forms(url)
+    if not forms:
+        print("No forms found on the URL.")
+        return
+
+    print(f"Found {len(forms)} forms on {url}.")
+    for i, form in enumerate(forms):
+        print(f"\nScanning form #{i + 1}...")
+        for payload in payloads:
+            print(f"Testing payload: {payload}")
+            response = submit_form(form, url, payload)
+            if response and payload in response.text:
+                print(f"XSS vulnerability detected with payload: {payload}")
+                break
+        else:
+            print("No vulnerabilities detected for this form.")
+
+
 
 def main():
     # Creates argument parser
