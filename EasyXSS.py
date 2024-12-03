@@ -3,18 +3,19 @@ import urllib  # Encodes URLs
 from bs4 import BeautifulSoup  # Parse html and locate input forms
 import argparse  # Handles command line prompts
 
-
 def formFinder(url):
     """
     Fetches and parses forms
     """
     try:
-        response = requests.get(url)
-        soup = BeautifulSoup(response.content, 'html.parser')  # Fixed typo here: 'html parser' -> 'html.parser'
+        response = requests.get(url, timeout=10)  # Add timeout here
+        soup = BeautifulSoup(response.content, 'html.parser')
         return soup.find_all("form")
+    except requests.exceptions.Timeout:
+        print("Request timed out while fetching forms.")
     except Exception as e:
         print(f"Error finding forms: {e}")
-        return []
+    return []
 
 
 def submitForm(form, url, payload):
@@ -23,7 +24,7 @@ def submitForm(form, url, payload):
     """
     try:
         action = form.attrs.get("action")
-        method = form.attrs.get("method", "get").lower()  # Fixed: 'Method' -> 'method'
+        method = form.attrs.get("method", "get").lower()
         form_url = urllib.parse.urljoin(url, action)
 
         inputs = form.find_all("input")
@@ -37,14 +38,16 @@ def submitForm(form, url, payload):
 
         # Send request based on form method
         if method == "post":
-            response = requests.post(form_url, data=data)
+            response = requests.post(form_url, data=data, timeout=10)  # Add timeout here
         else:
-            response = requests.get(form_url, params=data)
+            response = requests.get(form_url, params=data, timeout=10)  # Add timeout here
 
         return response
+    except requests.exceptions.Timeout:
+        print("Request timed out while submitting the form.")
     except Exception as e:
         print(f"Error submitting form: {e}")
-        return None
+    return None
 
 
 def scan_xss(url, payloads):
