@@ -3,7 +3,9 @@ import urllib  # Encodes URLs
 from bs4 import BeautifulSoup  # Parse html and locate input forms
 import argparse  # Handles command line prompts
 
-def formFinder(url):
+# commit notes: fixed naming conventions because im a dummy
+
+def form_finder(url):
     """
     Fetches and parses forms
     """
@@ -18,7 +20,7 @@ def formFinder(url):
     return []
 
 
-def submitForm(form, url, payload):
+def submit_form(form, url, payload):
     """
     Submits form and payload to the given URL
     """
@@ -54,7 +56,7 @@ def scan_xss(url, payloads):
     """
     Scans the target URL for XSS vulnerabilities using the given payloads.
     """
-    forms = formFinder(url)  # Fixed: Changed `find_forms` to `formFinder`
+    forms = form_finder(url)  
     if not forms:
         print("No forms found on the URL.")
         return
@@ -64,7 +66,7 @@ def scan_xss(url, payloads):
         print(f"\nScanning form #{i + 1}...")
         for payload in payloads:
             print(f"Testing payload: {payload}")
-            response = submitForm(form, url, payload)
+            response = submit_form(form, url, payload)
             if response and payload in response.text:
                 print(f"XSS vulnerability detected with payload: {payload}")
                 break
@@ -83,7 +85,7 @@ def main():
     # Parses the flags and stores them in args
     args = parser.parse_args()
 
-    defaultPayloads = [
+    default.payloads = [
         "<script>alert(1)</script>",
         "<svg/onload=alert(1)>",
         "<script>alert('XSS')</script>",
@@ -96,9 +98,9 @@ def main():
                 payloads = [line.strip() for line in f.readlines()]
         except FileNotFoundError:
             print("Payload file not found. Using default payloads.")
-            payloads = defaultPayloads
+            payloads = default.payloads
     else:
-        payloads = defaultPayloads
+        payloads = default.payloads
 
     # Start scanning for XSS vulnerabilities
     print(f"Scanning URL: {args.url}")
@@ -108,3 +110,4 @@ def main():
 # Run the script
 if __name__ == "__main__":
     main()
+
